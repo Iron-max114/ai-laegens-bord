@@ -1,0 +1,3 @@
+# Personal health data - NEVER commit
+data/*
+!data/README.md
